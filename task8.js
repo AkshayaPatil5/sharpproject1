@@ -38,11 +38,20 @@ function addItem(e){
 
   // Append li to list
   itemList.appendChild(li);
-  
   var editBtn = document.createElement('button');
-  editBtn.className = 'btn btn-danger btn-sm float-right delete';
-  editBtn.appendChild(document.createTextNode('edit'));
+ 
+  // Add classes to del button
+  editBtn.className = 'btn btn-white btn-sm float-right delete';
+
+  // Append text node
+  editBtn.appendChild(document.createTextNode('Edit'));
+
+  // Append button to li
   li.appendChild(editBtn);
+
+  // Append li to list
+  itemList.appendChild(li);
+  
   
   
   
@@ -77,9 +86,4 @@ function filterItems(e){
   });
 }
 
-var editBtn = document.createElement('button');
-//editBtn.className = 'btn btn-danger btn-sm float-right delete';
-//deleteBtn.setAttribute();
-//deleteBtn.appendChild(document.createTextNode("edit"));
-editBtn.setAttribute("btn btn-danger btn-sm float-right delete", "btn");
-editBtn.appendChild(document.createTextNode("Edit"));
+
