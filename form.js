@@ -40,12 +40,3 @@ function onSubmit(e) {
       
   
 }
-
-    // Add an event listener for form submissions
-    myForm.addEventListener('submit', function() {
-      // Get the value of the name field.
-      var name = document.getElementById('name').value;
-
-      // Save the name in localStorage.
-      localStorage.setItem('name', name);
-    });
