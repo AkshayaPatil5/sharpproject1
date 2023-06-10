@@ -1,0 +1,62 @@
+<html>
+    <body>
+        <form onsubmit="saveToLocalStorage(event)">
+            <label>Expense Amount</label>     
+            <input type="number" name="expense1" id="expenseAmount" required/>
+            <label>Expense Description</label>  
+            <input type="text" name="expense2" id="expenseDescription" required/>
+            <label>ExpenseCategory</label>
+            <input type="text" name="expense3" id="expenseCategory"  />
+            <button> Add Expense</button>
+        </form>
+        <ul id="expenses"></ul>
+        <script>
+          function saveToLocalStorage(event){
+            event.preventDefault();
+            const amount=event.target.expense1.value;
+            const description=event.target.expense2.value;
+            const category=event.target.expense3.value;
+            
+            const obj={
+                amount,
+                description,
+                category
+            }
+            localStorage.setItem(obj.amount, JSON.stringify(obj))
+            
+            showUserOnScreen(obj)
+    }
+    function showUserOnScreen(obj){
+      const parentElem=document.getElementById('expenses')
+      //const nameInput=document.querySelector('#name')
+      const childElem=document.createElement('li')
+      //li.appendChild(document.createTextNode(`${nameInput.value}`))
+      childElem.textContent = obj.amount + ' - ' + obj.description + ' - ' + obj.category+' - '
+      //console.log(childElem)
+      const deleteBtn=document.createElement("input")
+      deleteBtn.type="button"
+      deleteBtn.value="Delete"
+      deleteBtn.onclick=()=>{
+        localStorage.removeItem(obj.amount)
+        parentElem.removeChild(childElem)
+      }
+      const editBtn=document.createElement("input")
+      editBtn.type="button"
+      editBtn.value="Edit"
+      editBtn.onclick=()=>{
+        localStorage.removeItem(obj.email)
+        parentElem.removeChild(childElem)
+        document.getElementById("expenseAmount").value=obj.amount
+        document.getElementById("expenseDescription").value=obj.description
+        document.getElementById("expenseCategory").value=obj.category
+
+      }
+
+      childElem.appendChild(deleteBtn)
+      childElem.appendChild(editBtn)
+      parentElem.appendChild(childElem)
+      
+    }
+        </script>
+    </body>
+</html>

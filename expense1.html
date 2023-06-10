@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expense Tracker</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Expense Tracker</h1>
+        <form class="expenseForm" onsubmit="saveToLocalStorage(event)">
+            <div class="form-group">
+                <label for="expenseAmount" name="expense1" >Expense Amount:</label>
+                <input type="number" class="form-control" id="expenseAmount" required>
+            </div>
+            <div class="form-group">
+                <label for="expenseDescription" name="expense2">Expense Description:</label>
+                <input type="text" class="form-control" id="expenseDescription" required>
+            </div>
+            <div class="form-group">
+                <label for="expenseCategory" name="expense3">Expense Category:</label>
+                    <select class="form-control" id="expenseCategory">
+                        <option value="Movies">Movies</option>
+                        <option value="Travelling">Travelling</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Food">Food</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Expense</button>
+        </form>
+        <ul id="expenses"></ul>
+        <script>
+          function saveToLocalStorage(event){
+            event.preventDefault();
+            const amount = document.getElementById('expenseAmount').value;
+            const description = document.getElementById('expenseDescription').value;
+            const category = document.getElementById('expenseCategory').value;
+            
+            const obj={
+                amount,
+                description,
+                category
+            }
+            localStorage.setItem(obj.amount, JSON.stringify(obj))
+            
+            showUserOnScreen(obj)
+        }
+        function showUserOnScreen(obj){
+        const parentElem=document.getElementById('expenses')
+      
+        const childElem=document.createElement('li')
+      
+      childElem.textContent = obj.amount + ' - ' + obj.description + ' - ' + obj.category+' - '
+      
+      const deleteBtn=document.createElement("input")
+      deleteBtn.type="button "
+      deleteBtn.value="Delete"
+      deleteBtn.onclick=()=>{
+        localStorage.removeItem(obj.amount)
+        parentElem.removeChild(childElem)
+      }
+      const editBtn=document.createElement("input")
+      editBtn.type="button"
+      editBtn.value="Edit"
+      editBtn.onclick=()=>{
+        localStorage.removeItem(obj.email)
+        parentElem.removeChild(childElem)
+        document.getElementById("expenseAmount").value=obj.amount
+        document.getElementById("expenseDescription").value=obj.description
+        document.getElementById("expenseCategory").value=obj.category
+
+      }
+
+      childElem.appendChild(deleteBtn)
+      childElem.appendChild(editBtn)
+      parentElem.appendChild(childElem)
+      
+    }
+        </script>
+    </body>
+</html>
