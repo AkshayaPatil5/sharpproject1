@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  <title>Expense Tracker</title>
+  
+</head>
+<body>
+    
+    <script>
+        const posts= [{title: 'POST1'},{title: 'POST2'}];
+function getpost(){
+    setTimeout(()=>{
+        let output=" "
+        posts.forEach((post)=>{
+            output+=`<li>${post.title}</li>`
+        });
+        document.body.innerHTML=output
+    },1000)
+
+}
+
+function createpost(post){
+    return new Promise((res,rej)=>{
+        setTimeout(()=>{
+            const newPost = { ...post };
+            posts.push(newPost)
+            const error=false;
+            if(!error){
+                res(newPost)
+            }
+            else{
+                rej("Error")
+            }
+            
+        },2000)
+    })
+}
+const updateLastUserActivityTime = () => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const updateTime = new Date().getTime();
+        resolve(updateTime);
+      }, 1000);
+    });
+  };
+
+function deletepost(){
+    return new Promise((res,rej)=>{
+        setTimeout(()=>{
+            if(posts.length!=0){
+                res(posts.pop());
+            }
+            else{
+                rej("array is empty")
+            }
+
+            },1000)
+    })
+
+}
+async function main() {
+    try {
+      const [createdPost, updatedActivityTime] = await Promise.all([
+        createpost({ title: 'New Post' }),
+        updateLastUserActivityTime()
+      ]);
+  
+      console.log('All posts created:', createdPost);
+      console.log('Last activity time:', updatedActivityTime);
+  
+      const deletionResult = await deletepost(createdPost.id);
+      console.log('Deletion result:', deletionResult);
+  
+      
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  
+main();
+  
+  
+  
+  
+  
+  
+    
+
+    </script>
+    </body>
+</html>
