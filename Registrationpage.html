@@ -25,18 +25,45 @@
                 email,
                 phonenumber
             }
-            axios.post("https://crudcrud.com/api/35e07141c79d46cfbd96e9e4bca0ef28/appointmenyData",obj)
+            axios.post("https://crudcrud.com/api/35e07141c79d46cfbd96e9e4bca0ef28/appointmentData",obj)
             .then((response)=>{
                 showUserOnScreen(response.data)
+                console.log(response)
                 
             }).catch((err)=>{
                 document.body.innerHTML=document.body.innerHTML+"<h4>Something went wrong</h4>"
-                console.log(err)
+               console.log(err)
             })
             //localStorage.setItem(obj.email, JSON.stringify(obj))
             
             //showUserOnScreen(obj)
     }
+    window.addEventListener("DOMContentLoaded",()=>{
+        
+        axios.get("https://crudcrud.com/api/35e07141c79d46cfbd96e9e4bca0ef28/appointmentData")
+        .then((response)=>{
+        for (var i=0;i<response.data.length;i++){
+               
+               showUserOnScreen(response.data[i])
+              console.log(response)
+            }
+           
+            
+        }).catch((err)=>{
+            
+           console.log(err)
+        })
+        
+        //const localStorageObj=localStorage;
+        //const localStoragekeys=Object.keys(localStorageObj)
+        //for (var i=0;i<localStoragekeys.length;i++){
+            //const keys = localStoragekeys[i];
+            //const userDetailsString=localStorageObj[keys];
+            //const userDetailsObj=JSON.parse(userDetailsString);
+           // showUserOnScreen(userDetailsObj)
+        //}
+
+    })
     function showUserOnScreen(obj){
       const parentElem=document.getElementById('listOfitems')
       //const nameInput=document.querySelector('#name')
