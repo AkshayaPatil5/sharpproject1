@@ -25,9 +25,17 @@
                 email,
                 phonenumber
             }
-            localStorage.setItem(obj.email, JSON.stringify(obj))
+            axios.post("https://crudcrud.com/api/35e07141c79d46cfbd96e9e4bca0ef28/appointmenyData",obj)
+            .then((response)=>{
+                showUserOnScreen(response.data)
+                
+            }).catch((err)=>{
+                document.body.innerHTML=document.body.innerHTML+"<h4>Something went wrong</h4>"
+                console.log(err)
+            })
+            //localStorage.setItem(obj.email, JSON.stringify(obj))
             
-            showUserOnScreen(obj)
+            //showUserOnScreen(obj)
     }
     function showUserOnScreen(obj){
       const parentElem=document.getElementById('listOfitems')
