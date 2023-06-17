@@ -25,7 +25,7 @@
                 email,
                 phonenumber
             }
-            axios.post("https://crudcrud.com/api/35e07141c79d46cfbd96e9e4bca0ef28/appointmentData",obj)
+            axios.post("https://crudcrud.com/api/a4328cddcef345c0bca208c684277f3b/appointmentData",obj)
             .then((response)=>{
                 showUserOnScreen(response.data)
                 console.log(response)
@@ -40,7 +40,7 @@
     }
     window.addEventListener("DOMContentLoaded",()=>{
         
-        axios.get("https://crudcrud.com/api/35e07141c79d46cfbd96e9e4bca0ef28/appointmentData")
+        axios.get("https://crudcrud.com/api/a4328cddcef345c0bca208c684277f3b/appointmentData")
         .then((response)=>{
         for (var i=0;i<response.data.length;i++){
                
@@ -75,8 +75,17 @@
       deleteBtn.type="button"
       deleteBtn.value="Delete"
       deleteBtn.onclick=()=>{
-        localStorage.removeItem(obj.email)
-        parentElem.removeChild(childElem)
+        
+        axios
+            .delete("https://crudcrud.com/api/a4328cddcef345c0bca208c684277f3b/appointmentData/648d5933c632b703e8304d6d")
+            .then(() => {
+              parentElem.removeChild(childElem);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        //localStorage.removeItem(obj.email)
+        //parentElem.removeChild(childElem)
       }
       const editBtn=document.createElement("input")
       editBtn.type="button"
