@@ -48,3 +48,14 @@ preMovie().then((t) => console.log(`person3 shows ${t}`));
 console.log('person4 shows ticket');
 
 
+
+
+
+axios
+            .delete("https://crudcrud.com/api/e32f474a2c364524913e1aedf91a90ef")
+            .then(() => {
+              parentElem.removeChild(childElem);
+            })
+            .catch((err) => {
+              console.log(err);
+            });

@@ -247,3 +247,6 @@ function getTodos() {
     .addEventListener('click', transformResponse);
   document.getElementById('error').addEventListener('click', errorHandling);
   document.getElementById('cancel').addEventListener('click', cancelToken);
+
+
+  perentEle.innerHTML=perentEle.innerHTML+ `<li> ${obj.name} - ${obj.email} - ${obj.phonenumber} </li>`;
