@@ -1,0 +1,86 @@
+<html>
+    <body>
+        <form onsubmit="saveToLocalStorage(event)">
+            <label>Name</label>     
+            <input type="text" name="username" id="usernameInputTag" required/>
+            <label>EmailId</label>  
+            <input type="email" name="emailId" id="emailInputTag" required/>
+            <label>Phone Number</label>
+            <input type="tel" name="phonenumber" id="phoneNumberInputTag">
+            <button> Submit </button>
+        </form>
+        <ul id="listOfitems"></ul>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+        <script>
+          function saveToLocalStorage(event) {
+            event.preventDefault();
+            // Retrieve values from input fields
+            const name = event.target.username.value;
+            const email = event.target.emailId.value;
+            const phonenumber = event.target.phonenumber.value;
+        
+            // Create an object with the user's data
+            const obj = {
+                name,
+                email,
+                phonenumber
+            };
+        
+            // Send a POST request to the server using Axios
+            axios.post("https://crudcrud.com/api/d38b55337748428d9833be48c697f0d1/newdata", obj)
+                .then((response) => {
+                    showUserOnScreen(response.data);
+                    console.log(response);
+                })
+                .catch((err) => {
+                    document.body.innerHTML = document.body.innerHTML + "<h4>Something went wrong</h4>";
+                    console.log(err);
+                });
+        }
+        
+        function showUserOnScreen(obj) {
+            // Clear input fields
+            document.getElementById("usernameInputTag").value = "";
+            document.getElementById("emailInputTag").value = "";
+            document.getElementById("phoneNumberInputTag").value = "";
+        
+            // Check if the user already exists and remove them from the screen
+            if (localStorage.getItem(obj.email) != null) {
+                removeUserfromScreen(obj.email);
+            }
+        
+            // Create a new list item with the user's data and append it to the list
+            const parentNode = document.getElementById('listOfitems');
+            const childHTML = `
+                <li id=${obj._id}>
+                    ${obj.name} - ${obj.email}
+                    <button onclick="deleteUser('${obj.obj._id}')">Delete</button>
+                    <button onclick="editUser('${obj._id}','${obj.name}','${obj.phonenumber}')">Edit</button>
+                </li>`;
+            parentNode.innerHTML = parentNode.innerHTML + childHTML;
+        }
+        
+        function deleteUser(userId) {
+            // Send a DELETE request to the server using Axios
+            axios.delete(`https://crudcrud.com/api/d38b55337748428d9833be48c697f0d1/newdata/${userId}`)
+                .then((response) => {
+                    removeUserfromScreen(userId);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
+        
+        function removeUserfromScreen(userId) {
+            // Remove the user from the screen by removing the corresponding list item
+            const parentNode = document.getElementById('listOfitems');
+            const childNodeToBeDeleted = document.getElementById(userId);
+            if (childNodeToBeDeleted) {
+                parentNode.removeChild(childNodeToBeDeleted);
+            }
+        }
+        
+
+        </script>
+    </body>
+</html>
