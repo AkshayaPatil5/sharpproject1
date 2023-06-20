@@ -1,0 +1,134 @@
+<html>
+  <body>
+    <form onsubmit="saveToLocalStorage(event)">
+      <label>Candy Name</label>
+      <input type="text" name="candyname" id="candynameId">
+      <label>Description</label>
+      <input type="text" name="description" id="descriptionId">
+      <label>Price</label>
+      <input type="number" name="price" id="priceId">
+      <label>Quantity</label>
+      <input type="number" name="quantity" id="quantityId">
+      <button>Add Item</button>
+    </form>
+    <ul id="listOfitems"></ul>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    <script>
+      function saveToLocalStorage(event) {
+        event.preventDefault();
+        const cname = event.target.candyname.value;
+        const cdescription = event.target.description.value;
+        const cprice = event.target.price.value;
+        const cquantity = event.target.quantity.value;
+
+        const obj = {
+          cname,
+          cdescription,
+          cprice,
+          cquantity
+        };
+
+        axios
+          .post(
+            "https://crudcrud.com/api/01130146e8064e17a6852d8597efcd5d/candies1",
+            obj
+          )
+          .then((response) => {
+            showUserOnScreen(response.data);
+            console.log(response);
+          })
+          .catch((err) => {
+            document.body.innerHTML =
+              document.body.innerHTML + "<h4>Something went wrong</h4>";
+            console.log(err);
+          });
+      }
+
+      window.addEventListener("DOMContentLoaded", () => {
+        axios
+          .get(
+            "https://crudcrud.com/api/01130146e8064e17a6852d8597efcd5d/candies1"
+          )
+          .then((response) => {
+            for (var i = 0; i < response.data.length; i++) {
+              showUserOnScreen(response.data[i]);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
+
+      function showUserOnScreen(obj) {
+        const parentNode = document.getElementById("listOfitems");
+      
+        axios
+          .get(`https://crudcrud.com/api/01130146e8064e17a6852d8597efcd5d/candies1/${obj._id}`)
+          .then((response) => {
+            const updatedObj = response.data;
+      
+            document.getElementById("candynameId").value = "";
+            document.getElementById("descriptionId").value = "";
+            document.getElementById("priceId").value = "";
+            document.getElementById("quantityId").value = "";
+      
+            if (localStorage.getItem(updatedObj.cname) != null) {
+              removeUserfromScreen(updatedObj._id);
+            }
+      
+            const childHTML = `
+              <li id="${updatedObj._id}">
+                ${updatedObj.cname} - ${updatedObj.cdescription} - ${updatedObj.cprice}- <span class="item-quantity">${updatedObj.cquantity}</span>
+                <button onclick="buyQuantity('${updatedObj._id}', 1)">Buy 1</button>
+                <button onclick="buyQuantity('${updatedObj._id}', 2)">Buy 2</button>
+                <button onclick="buyQuantity('${updatedObj._id}', 3)">Buy 3</button>
+              </li>`;
+      
+            parentNode.innerHTML += childHTML;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+      
+      function removeUserfromScreen(itemId) {
+        const parentNode = document.getElementById("listOfitems");
+        const childNodeToBeDeleted = document.getElementById(itemId);
+        if (childNodeToBeDeleted) {
+          parentNode.removeChild(childNodeToBeDeleted);
+        }
+      }
+      function buyQuantity(itemId, quantity, cname, cdescription, cprice) {
+        const itemElement = document.getElementById(itemId);
+        const quantityElement = itemElement.querySelector('.item-quantity');
+        let currentQuantity = parseInt(quantityElement.textContent);
+      
+        if (currentQuantity >= quantity) {
+          const newQuantity = currentQuantity - quantity;
+          quantityElement.textContent = newQuantity;
+      
+          // Update the quantity in the database
+          axios
+            .put(
+              `https://crudcrud.com/api/01130146e8064e17a6852d8597efcd5d/candies1/${itemId}`,
+              {
+                cname: cname,
+                cdescription: cdescription,
+                cprice: cprice,
+                cquantity: newQuantity
+              }
+            )
+            .then((response) => {
+              console.log(response);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      }
+      
+      
+      
+    </script>
+  </body>
+</html>

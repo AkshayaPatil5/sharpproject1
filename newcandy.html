@@ -1,0 +1,121 @@
+<html>
+  <body>
+    <form onsubmit="saveToLocalStorage(event)">
+      <label>Candy Name</label>
+      <input type="text" name="candyname" id="candynameId">
+      <label>Description</label>
+      <input type="text" name="description" id="descriptionId">
+      <label>Price</label>
+      <input type="number" name="price" id="priceId">
+      <label>Quantity</label>
+      <input type="number" name="quantity" id="quantityId">
+      <button>Add Item</button>
+    </form>
+    <ul id="listOfitems"></ul>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    <script>
+      function saveToLocalStorage(event) {
+        event.preventDefault();
+        const cname = event.target.candyname.value;
+        const cdescription = event.target.description.value;
+        const cprice = event.target.price.value;
+        const cquantity = event.target.quantity.value;
+
+        const obj = {
+          cname,
+          cdescription,
+          cprice,
+          cquantity
+        };
+
+        axios
+          .post(
+            "https://crudcrud.com/api/51ea3df249b84d51be136da2ec26ec5f/candies1",
+            obj
+          )
+          .then((response) => {
+            showUserOnScreen(response.data);
+            console.log(response);
+          })
+          .catch((err) => {
+            document.body.innerHTML =
+              document.body.innerHTML + "<h4>Something went wrong</h4>";
+            console.log(err);
+          });
+          
+        // Optional: Save the data in localStorage
+        localStorage.setItem(cname, JSON.stringify(obj));
+      }
+
+      window.addEventListener("DOMContentLoaded", () => {
+        axios
+          .get(
+            "https://crudcrud.com/api/51ea3df249b84d51be136da2ec26ec5f/candies1"
+          )
+          .then((response) => {
+            for (var i = 0; i < response.data.length; i++) {
+              showUserOnScreen(response.data[i]);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+          
+        // Optional: Retrieve data from localStorage and display it on page load
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          const obj = JSON.parse(localStorage.getItem(key));
+          showUserOnScreen(obj);
+        }
+      });
+
+      function showUserOnScreen(obj) {
+        const parentNode = document.getElementById("listOfitems");
+
+        const childHTML = `
+          <li id="${obj._id}">
+            ${obj.cname} - ${obj.cdescription} - ${obj.cprice} - <span class="item-quantity">${obj.cquantity}</span>
+            <button onclick="buyQuantity('${obj._id}', 1)">Buy 1</button>
+            <button onclick="buyQuantity('${obj._id}', 2)">Buy 2</button>
+            <button onclick="buyQuantity('${obj._id}', 3)">Buy 3</button>
+          </li>`;
+
+        parentNode.innerHTML += childHTML;
+      }
+
+      function removeUserfromScreen(itemId) {
+        const parentNode = document.getElementById("listOfitems");
+        const childNodeToBeDeleted = document.getElementById(itemId);
+        if (childNodeToBeDeleted) {
+          parentNode.removeChild(childNodeToBeDeleted);
+        }
+      }
+
+      function buyQuantity(itemId, quantity) {
+        const parentNode = document.getElementById(itemId);
+        const quantityNode = parentNode.querySelector(".item-quantity");
+        const currentQuantity = Number(quantityNode.textContent);
+
+        if (currentQuantity >= quantity) {
+          const newQuantity = currentQuantity - quantity;
+          quantityNode.textContent = newQuantity;
+
+          // Update the item's price and quantity in the database using an API call (e.g., axios.put)
+          axios
+            .put(
+              `https://crudcrud.com/api/51ea3df249b84d51be136da2ec26ec5f/candies1/${itemId}`,
+              { cquantity: newQuantity }
+            )
+            .then((response) => {
+              console.log(response);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else {
+          alert("Insufficient quantity.");
+        }
+      }
+    </script>
+  </body>
+</html>
