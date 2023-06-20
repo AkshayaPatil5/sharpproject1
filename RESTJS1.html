@@ -16,17 +16,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
     <script>
         function saveToLocalStorage(event) {
-            event.preventDefault(); // Prevent form submission
+            event.preventDefault(); 
           
-            // Retrieve the values from the input fields
+            
             var todoName = document.getElementById("todoNameId").value;
             var description = document.getElementById("descriptionId").value;
           
-            // Create an object to represent the new todo item
+            
             var obj = {
               name: todoName,
               description: description,
-              completed: false // Assuming new items are not completed by default
+              completed: false 
             };
           
             axios
