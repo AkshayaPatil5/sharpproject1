@@ -16,109 +16,130 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
     <script>
         function saveToLocalStorage(event) {
-            event.preventDefault(); 
+  event.preventDefault();
+
+  var todoName = document.getElementById("todoNameId").value;
+  var description = document.getElementById("descriptionId").value;
+
+  var obj = {
+    name: todoName,
+    description: description,
+    completed: false
+  };
+
+  axios
+    .post(
+      "https://crudcrud.com/api/f303977ed458470fbb43f0d13f4fb142/candies1",
+      obj
+    )
+    .then((response) => {
+      showUserOnScreen(response.data);
+      console.log(response);
+    })
+    .catch((err) => {
+      document.body.innerHTML =
+        document.body.innerHTML + "<h4>Something went wrong</h4>";
+      console.log(err);
+    });
+}
+
           
-            
-            var todoName = document.getElementById("todoNameId").value;
-            var description = document.getElementById("descriptionId").value;
-          
-            
-            var obj = {
-              name: todoName,
-              description: description,
-              completed: false 
-            };
-          
-            axios
-              .post(
-                "https://crudcrud.com/api/f303977ed458470fbb43f0d13f4fb142/candies1",
-                obj
-              )
-              .then((response) => {
-                showUserOnScreen(response.data);
-                console.log(response);
-              })
-              .catch((err) => {
-                document.body.innerHTML =
-                  document.body.innerHTML + "<h4>Something went wrong</h4>";
-                console.log(err);
-              });
-          }
-          
-          function showUserOnScreen(obj) {
-            document.getElementById("todoNameId").value = "";
-            document.getElementById("descriptionId").value = "";
-          
-            if (localStorage.getItem(obj._id) !== null) {
-              removeUserfromScreen(obj._id);
-            }
-          
-            const parentNode = obj.completed ? document.getElementById('doneList') : document.getElementById('todoList');
-          
-            const childHTML = `
-              <li id=${obj._id}>
-                  ${obj.name} - ${obj.description}
-                  <button onclick="rightTick('${obj._id}')">✅</button>
-                  <button onclick="wrongTick('${obj._id}')">❌</button>
-              </li>`;
-          
-            parentNode.innerHTML = parentNode.innerHTML + childHTML;
-          
-          
-            
-          }
-          window.addEventListener("DOMContentLoaded", () => {
-            axios
-              .get(
-                "https://crudcrud.com/api/f303977ed458470fbb43f0d13f4fb142/candies1"
-              )
-              .then((response) => {
-                for (var i = 0; i < response.data.length; i++) {
-                  showUserOnScreen(response.data[i]);
-                }
-              })
-              .catch((err) => {
-                console.log(err);
-              });
-          });
+function showUserOnScreen(obj) {
+    document.getElementById("todoNameId").value = "";
+    document.getElementById("descriptionId").value = "";
+  
+    if (localStorage.getItem(obj._id) !== null) {
+      removeUserFromScreen(obj._id);
+    }
+  
+    const parentNode = obj.completed ? document.getElementById('doneList') : document.getElementById('todoList');
+  
+    const childHTML = `
+      <li id=${obj._id}>
+        ${obj.name} - ${obj.description}
+        <button onclick="rightTick('${obj._id}')">✅</button>
+        <button onclick="wrongTick('${obj._id}')">❌</button>
+      </li>`;
+  
+    parentNode.innerHTML = parentNode.innerHTML + childHTML;
+  
+   
+    localStorage.setItem(obj._id, JSON.stringify(obj));
+  }
+  
+  window.addEventListener("DOMContentLoaded", () => {
+    axios
+      .get(
+        "https://crudcrud.com/api/f303977ed458470fbb43f0d13f4fb142/candies1"
+      )
+      .then((response) => {
+        for (var i = 0; i < response.data.length; i++) {
+          const data = response.data[i];
+          const id = data._id;
+          showDataOnScreen(data, id);
+          localStorage.setItem(id, JSON.stringify(data)); 
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  });
           
           
           
 
-function rightTick(userId) {
-    axios
-      .put(
-        `https://crudcrud.com/api/f303977ed458470fbb43f0d13f4fb142/candies1/${userId}`,
-        { completed: true }
-      )
-      .then((response) => {
-        const listItem = document.getElementById(userId);
-        const doneList = document.getElementById('doneList');
+          function rightTick(userId) {
+            const obj = JSON.parse(localStorage.getItem(userId));
+          
+            if (obj) {
+              obj.completed = true;
+          
+              axios
+                .put(
+                  `https://crudcrud.com/api/f303977ed458470fbb43f0d13f4fb142/candies1/${userId}`,
+                  obj
+                )
+                .then((response) => {
+                  const listItem = document.getElementById(userId);
+                  const doneList = document.getElementById('doneList');
+          
+                  doneList.appendChild(listItem);
+          
+                 
+                  localStorage.setItem(userId, JSON.stringify(obj));
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            }
+          }
+          
+          function wrongTick(userId) {
+            const obj = JSON.parse(localStorage.getItem(userId));
+          
+            if (obj) {
+              obj.completed = false;
+          
+              axios
+                .put(
+                  `https://crudcrud.com/api/f303977ed458470fbb43f0d13f4fb142/candies1/${userId}`,
+                  obj
+                )
+                .then((response) => {
+                  const listItem = document.getElementById(userId);
+                  const todoList = document.getElementById('todoList');
+          
+                  todoList.appendChild(listItem);
+          
                   
-        doneList.appendChild(listItem);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-  
-  function wrongTick(name, description, userId) {
-    axios
-      .put(
-        `https://crudcrud.com/api/f303977ed458470fbb43f0d13f4fb142/candies1/${userId}`,
-        { name: name, description: description, completed: false }
-      )
-      .then((response) => {
-        const listItem = document.getElementById(userId);
-        const todoList = document.getElementById('todoList');
-                  
-        todoList.appendChild(listItem);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-  
+                  localStorage.setItem(userId, JSON.stringify(obj));
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            }
+          }
+          
           
           function removeUserfromScreen(userId){
             const parentNode = document.getElementById('listOfitems');
