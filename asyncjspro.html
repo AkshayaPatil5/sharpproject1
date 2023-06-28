@@ -1,0 +1,106 @@
+<html>
+  <body>
+    <form onsubmit="saveToLocalStorage(event)">
+      <label>TodoName</label>
+      <input type="text" name="todoname" id="todoNameId">
+      <label>Description</label>
+      <input type="text" name="description" id="descriptionId">
+      
+      <button type="submit">Add Item</button>
+    </form>
+    <h2>Todo</h2>
+    <ul id="todoList"></ul>
+    <h2>Done</h2>
+    <ul id="doneList"></ul>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    <script>
+        async function saveToLocalStorage(event) {
+            event.preventDefault(); 
+          
+            var todoName = document.getElementById("todoNameId").value;
+            var description = document.getElementById("descriptionId").value;
+          
+            var obj = {
+              name: todoName,
+              description: description,
+              completed: false 
+            };
+          
+            try {
+              const response = await axios.post("https://crudcrud.com/api/0aac118495174ae39fbeeb17a739ba39/work1", obj);
+              showItemOnScreen(response.data);
+              console.log(response);
+            } catch (err) {
+              document.body.innerHTML += "<h4>Something went wrong</h4>";
+              console.log(err);
+            }
+        }
+        
+        function showItemOnScreen(obj) {
+            document.getElementById("todoNameId").value = "";
+            document.getElementById("descriptionId").value = "";
+          
+            const parentNode = obj.completed ? document.getElementById('doneList') : document.getElementById('todoList');
+          
+            const childHTML = `
+              <li id="${obj._id}" data-name="${obj.name}" data-description="${obj.description}">
+                ${obj.name} - ${obj.description}
+                <button onclick="rightTick('${obj._id}')">✅</button>
+                <button onclick="wrongTick('${obj._id}')">❌</button>
+              </li>`;
+          
+            parentNode.innerHTML += childHTML;
+        }
+        
+        window.addEventListener("DOMContentLoaded", async () => {
+            try {
+              const response = await axios.get("https://crudcrud.com/api/0aac118495174ae39fbeeb17a739ba39/work1");
+              for (var i = 0; i < response.data.length; i++) {
+                showItemOnScreen(response.data[i]);
+              }
+            } catch (err) {
+              console.log(err);
+            }
+        });
+          
+        async function rightTick(itemId) {
+            const listItem = document.getElementById(itemId);
+            const name = listItem.getAttribute('data-name');
+            const description = listItem.getAttribute('data-description');
+          
+            try {
+              await axios.put(`https://crudcrud.com/api/0aac118495174ae39fbeeb17a739ba39/work1/${itemId}`, {
+                name: name,
+                description: description,
+                completed: true
+              });
+              
+              const doneList = document.getElementById('doneList');
+              doneList.appendChild(listItem);
+            } catch (err) {
+              console.log(err);
+            }
+        }
+        
+        async function wrongTick(itemId) {
+            const listItem = document.getElementById(itemId);
+            const name = listItem.getAttribute('data-name');
+            const description = listItem.getAttribute('data-description');
+          
+            try {
+              await axios.put(`https://crudcrud.com/api/0aac118495174ae39fbeeb17a739ba39/work1/${itemId}`, {
+                name: name,
+                description: description,
+                completed: false
+              });
+              
+              const todoList = document.getElementById('todoList');
+              todoList.appendChild(listItem);
+            } catch (err) {
+              console.log(err);
+            }
+        }
+    </script>
+  </body>
+</html>

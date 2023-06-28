@@ -15,42 +15,44 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
     <script>
+        // Function to save the item to the API
         function saveToLocalStorage(event) {
             event.preventDefault(); 
           
+            // Get the values from the input fields
             var todoName = document.getElementById("todoNameId").value;
             var description = document.getElementById("descriptionId").value;
           
+            // Create an object representing the new item
             var obj = {
               name: todoName,
               description: description,
               completed: false 
             };
           
-            axios
-              .post(
-                "https://crudcrud.com/api/0aac118495174ae39fbeeb17a739ba39/work1",
-                obj
-              )
+            // Send a POST request to save the new item
+            axios.post("https://crudcrud.com/api/11430d5430a2447cb9ceeb1a995c68cb/candies1", obj)
               .then((response) => {
+                // Show the newly added item on the screen
                 showItemOnScreen(response.data);
                 console.log(response);
               })
               .catch((err) => {
-                document.body.innerHTML +=
-                  "<h4>Something went wrong</h4>";
+                document.body.innerHTML += "<h4>Something went wrong</h4>";
                 console.log(err);
               });
         }
         
+        // Function to display an item on the screen
         function showItemOnScreen(obj) {
+            // Clear the input fields
             document.getElementById("todoNameId").value = "";
             document.getElementById("descriptionId").value = "";
           
-            
-          
+            // Determine the parent list based on item completion status
             const parentNode = obj.completed ? document.getElementById('doneList') : document.getElementById('todoList');
           
+            // Generate HTML for the item
             const childHTML = `
               <li id="${obj._id}" data-name="${obj.name}" data-description="${obj.description}">
                 ${obj.name} - ${obj.description}
@@ -58,15 +60,16 @@
                 <button onclick="wrongTick('${obj._id}')">❌</button>
               </li>`;
           
+            // Append the item to the appropriate list
             parentNode.innerHTML += childHTML;
         }
         
+        // Function to fetch and display existing items on page load
         window.addEventListener("DOMContentLoaded", () => {
-            axios
-              .get(
-                "https://crudcrud.com/api/0aac118495174ae39fbeeb17a739ba39/work1"
-              )
+            // Fetch the existing items from the API
+            axios.get("https://crudcrud.com/api/11430d5430a2447cb9ceeb1a995c68cb/candies1")
               .then((response) => {
+                // Display each item on the screen
                 for (var i = 0; i < response.data.length; i++) {
                   showItemOnScreen(response.data[i]);
                 }
@@ -76,23 +79,21 @@
               });
         });
           
+        // Function to mark an item as completed
         function rightTick(itemId) {
             const listItem = document.getElementById(itemId);
             const name = listItem.getAttribute('data-name');
             const description = listItem.getAttribute('data-description');
           
-            axios
-              .put(
-                `https://crudcrud.com/api/0aac118495174ae39fbeeb17a739ba39/work1/${itemId}`,
-                {
-                  name: name,
-                  description: description,
-                  completed: true
-                }
-              )
+            // Update the item as completed by sending a PUT request
+            axios.put(`https://crudcrud.com/api/11430d5430a2447cb9ceeb1a995c68cb/candies1/${itemId}`, {
+              name: name,
+              description: description,
+              completed: true
+            })
               .then((response) => {
+                // Move the item to the 'Done' list
                 const doneList = document.getElementById('doneList');
-                          
                 doneList.appendChild(listItem);
               })
               .catch((err) => {
@@ -100,31 +101,27 @@
               });
         }
         
+        // Function to mark an item as incomplete
         function wrongTick(itemId) {
             const listItem = document.getElementById(itemId);
             const name = listItem.getAttribute('data-name');
             const description = listItem.getAttribute('data-description');
           
-            axios
-              .put(
-                `https://crudcrud.com/api/0aac118495174ae39fbeeb17a739ba39/work1/${itemId}`,
-                {
-                  name: name,
-                  description: description,
-                  completed: false
-                }
-              )
+            // Update the item as incomplete by sending a PUT request
+            axios.put(`https://crudcrud.com/api/11430d5430a2447cb9ceeb1a995c68cb/candies1/${itemId}`, {
+              name: name,
+              description: description,
+              completed: false
+            })
               .then((response) => {
+                // Move the item to the 'Todo' list
                 const todoList = document.getElementById('todoList');
-                          
                 todoList.appendChild(listItem);
               })
               .catch((err) => {
                 console.log(err);
               });
         }
-  
-        
     </script>
   </body>
 </html>
