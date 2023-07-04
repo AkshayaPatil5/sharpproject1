@@ -28,7 +28,7 @@
             };
           
             try {
-              const response = await axios.post("https://crudcrud.com/api/0aac118495174ae39fbeeb17a739ba39/work1", obj);
+              const response = await axios.post("https://crudcrud.com/api/a41361994fe9445b9bda510c10e22849/work3", obj);
               showItemOnScreen(response.data);
               console.log(response);
             } catch (err) {
@@ -38,24 +38,24 @@
         }
         
         function showItemOnScreen(obj) {
-            document.getElementById("todoNameId").value = "";
-            document.getElementById("descriptionId").value = "";
-          
-            const parentNode = obj.completed ? document.getElementById('doneList') : document.getElementById('todoList');
-          
-            const childHTML = `
-              <li id="${obj._id}" data-name="${obj.name}" data-description="${obj.description}">
-                ${obj.name} - ${obj.description}
-                <button onclick="rightTick('${obj._id}')">✅</button>
-                <button onclick="wrongTick('${obj._id}')">❌</button>
-              </li>`;
-          
-            parentNode.innerHTML += childHTML;
+          document.getElementById("todoNameId").value = "";
+          document.getElementById("descriptionId").value = "";
+        
+          const parentNode = obj.completed ? document.getElementById('doneList') : document.getElementById('todoList');
+        
+          const childHTML = `
+            <li id="${obj._id}" data-name="${obj.name}" data-description="${obj.description}">
+              ${obj.name} - ${obj.description}
+              <button onclick="rightTick('${obj._id}')">✅</button>
+              ${obj.completed ? '' : `<button onclick="wrongTick('${obj._id}')">❌</button>`}
+            </li>`;
+        
+          parentNode.innerHTML += childHTML;
         }
         
         window.addEventListener("DOMContentLoaded", async () => {
             try {
-              const response = await axios.get("https://crudcrud.com/api/0aac118495174ae39fbeeb17a739ba39/work1");
+              const response = await axios.get("https://crudcrud.com/api/a41361994fe9445b9bda510c10e22849/work3");
               for (var i = 0; i < response.data.length; i++) {
                 showItemOnScreen(response.data[i]);
               }
@@ -70,7 +70,7 @@
             const description = listItem.getAttribute('data-description');
           
             try {
-              await axios.put(`https://crudcrud.com/api/0aac118495174ae39fbeeb17a739ba39/work1/${itemId}`, {
+              await axios.put(`https://crudcrud.com/api/a41361994fe9445b9bda510c10e22849/work3/${itemId}`, {
                 name: name,
                 description: description,
                 completed: true
@@ -89,7 +89,7 @@
             const description = listItem.getAttribute('data-description');
           
             try {
-              await axios.put(`https://crudcrud.com/api/0aac118495174ae39fbeeb17a739ba39/work1/${itemId}`, {
+              await axios.put(`https://crudcrud.com/api/a41361994fe9445b9bda510c10e22849/work3/${itemId}`, {
                 name: name,
                 description: description,
                 completed: false
